@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStandardItem>
+#include <QStandardItemModel>
 
 
 namespace Ui {
@@ -23,6 +25,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QStandardItemModel *historyTableModel = nullptr;
+
 };
 
 #endif // MAINWINDOW_H
