@@ -12,7 +12,7 @@
 #include <QSqlQuery>
 #include <QDir>
 
-#include "historyitem.h"
+//#include "historyitem.h"
 
 
 namespace Ui {

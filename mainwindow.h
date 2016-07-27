@@ -5,6 +5,10 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 
+#include <QSqlQueryModel>
+#include <QSqlQuery>
+#include <QSortFilterProxyModel>
+
 
 namespace Ui {
 class MainWindow;
@@ -23,9 +27,12 @@ private slots:
 
     void on_action_History_toggled(bool arg1);
 
+    void on_historyTableView_clicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
-    QStandardItemModel *historyTableModel = nullptr;
+    void populateStatsTableView(int id) const; //populate with the stats associated with the record with the given id
+
 
 };
 

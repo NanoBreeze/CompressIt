@@ -50,7 +50,6 @@ TestMainWindow::TestMainWindow(QWidget *parent) :
 QStandardItemModel *tableModel = new QStandardItemModel(5, 2, this);
 tableModel->setHorizontalHeaderItem(0, new QStandardItem("Column 0"));
 
-HistoryItem* h = new HistoryItem(QString("fileName"), QString("fileType"), 35.98);
 
 //tableModel->setHorizontalHeaderItem(1, new QStandardItem("Column 1"));
 tableModel->setHorizontalHeaderItem(1, new QStandardItem("Column 0"));

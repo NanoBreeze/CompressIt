@@ -16,15 +16,12 @@ CONFIG += c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     testmainwindow.cpp \
-    historyitemmodel.cpp \
-    historyitem.cpp \
     dbmanager.cpp
 
 HEADERS  += mainwindow.h \
     testmainwindow.h \
-    historyitemmodel.h \
-    historyitem.h \
-    dbmanager.h
+    dbmanager.h \
+    historyitem.h
 
 FORMS    += mainwindow.ui \
     testmainwindow.ui
