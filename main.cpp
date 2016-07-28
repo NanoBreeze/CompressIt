@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     HistoryItem h = dbManager.getHistoryItem(2);
     qDebug() << h.originalSize;
 //    dbManager.addHistoryItem("newFile", 56, 12.5, 45.9, 65.8, 7897.5, "notes");
-//    MainWindow w;
-//    w.show();
+    MainWindow w;
+    w.show();
     return a.exec();
 }

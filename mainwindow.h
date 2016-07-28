@@ -9,6 +9,9 @@
 #include <QSqlQuery>
 #include <QSortFilterProxyModel>
 
+#include "historyitem.h"
+#include "dbmanager.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -31,8 +34,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    void populateStatsTableView(int id) const; //populate with the stats associated with the record with the given id
-
+    void populateStatsDockWidget(const int& id) const; //populate with the stats associated with the record with the given id
 
 };
 

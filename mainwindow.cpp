@@ -67,6 +67,7 @@ void MainWindow::on_historyTableView_clicked(const QModelIndex &index)
         ui->historyTableView->selectRow(rowIndex);
 
         int id = index.sibling(rowIndex, 0).data().toInt();
+        populateStatsDockWidget(id);
         qDebug() << id;
         QString cellText = index.data().toString();
         qDebug() << cellText;
@@ -75,7 +76,15 @@ void MainWindow::on_historyTableView_clicked(const QModelIndex &index)
     else { qCritical() << "The index is invalid"; }
 }
 
-void MainWindow::populateStatsTableView(int id) const
+//change Stats dock's labels to show the stats associated with this compressed file
+void MainWindow::populateStatsDockWidget(const int& id) const
 {
-
+    HistoryItem historyItem = DbManager::getDbManager().getHistoryItem(id);
+    ui->fileName_lbl->setText(historyItem.fileName);
+    ui->date_time_lbl->setText(QString::number(historyItem.dateTime));
+    ui->originalSize_lbl->setText(QString::number(historyItem.originalSize));
+    ui->compressedSize_lbl->setText(QString::number(historyItem.compressedSize));
+    ui->executionTime_lbl->setText(QString::number(historyItem.executionTime));
+    ui->compressionRatio_lbl->setText(QString::number(historyItem.compressionRatio));
+    ui->notes_lbl->setText(historyItem.notes);
 }
