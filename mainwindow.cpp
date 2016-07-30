@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setupHistoryTableView();
     setupCurrentFilesTableWidget();
 
+    setAcceptDrops(true);
+
     ui->statusBar->showMessage("This is the status bar");
 
 }
@@ -67,21 +69,8 @@ void MainWindow::on_action_Load_triggered()
 
     for (const QUrl url: selectedFileUrls)
     {
-
-        QString fileUrl = url.toString().right(url.toString().count() - 8);
-        qDebug() << "The fileUrl is: " << fileUrl;
-
-        QFile file(fileUrl);
-        Q_ASSERT( file.exists()); //since the user selected the file, it must exist!
-
-        QFileInfo fileInfo(file.fileName()); //us
-
-        QString fileName = fileInfo.fileName();
-        double fileSize = file.size();
-
-        qDebug() << fileName;
-        qDebug() << fileSize;
-
+        QString fileName = extractFileName(url);
+        double fileSize = getFileSize(url);
 
         displayFileData(fileName, fileSize);
     }
@@ -135,4 +124,62 @@ void MainWindow::displayFileData(const QString& fileName, const double& fileSize
     ui->currentFilesTableWidget->setItem(lastRowIndex, 0, new QTableWidgetItem(fileName));
     ui->currentFilesTableWidget->setItem(lastRowIndex, 1, new QTableWidgetItem(QString::number(fileSize)));
 
+}
+
+
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->accept();
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+
+    const QMimeData* mimeData = event->mimeData();
+
+    // check for our needed mime type, here a file or a list of files
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urls = mimeData->urls();
+
+        for (const QUrl url : urls )
+        {
+            QString fileName = extractFileName(url);
+            double fileSize = getFileSize(url);
+
+            displayFileData(fileName, fileSize);
+        }
+    }
+}
+
+QString MainWindow::extractFileName(const QUrl &url)
+{
+
+    QString fileUrl = url.toString().right(url.toString().count() - 8);
+    qDebug() << "The fileUrl is: " << fileUrl;
+
+
+    QFile file(fileUrl);
+    Q_ASSERT( file.exists()); //since the user selected the file, it must exist!
+
+    QFileInfo fileInfo(file.fileName()); //us
+
+    QString fileName = fileInfo.fileName();
+    qDebug() << fileName;
+    return fileName;
+
+    double fileSize = file.size();
+
+    qDebug() << fileSize;
+}
+
+double MainWindow::getFileSize(const QUrl &url)
+{
+
+    QString fileUrl = url.toString().right(url.toString().count() - 8);
+    QFile file(fileUrl);
+
+    qDebug() << file.size();
+    return file.size();
 }

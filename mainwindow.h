@@ -10,6 +10,9 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QFile>
+#include <QMimeData>
+
+#include <QDragEnterEvent>
 
 #include <QDebug>
 
@@ -45,6 +48,9 @@ private slots:
             qDebug() << "Resizing happening";
     };
 
+protected:
+    void dropEvent(QDropEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event);
 
 private:
     Ui::MainWindow *ui;
@@ -53,6 +59,9 @@ private:
     void setupCurrentFilesTableWidget(); //sets the horizontal headers, number of columns and rows
     void setupHistoryTableView(); //sets the model and resizing capabilities of the history table view
     void displayFileData(const QString& fileName, const double& fileSize); //populates currentFilesTableWidget with the data associated with the file
+
+    QString extractFileName(const QUrl& url); //returns the name of the file given its URL
+    double getFileSize(const QUrl& url); //returns the size of the specified file
 };
 
 #endif // MAINWINDOW_H
