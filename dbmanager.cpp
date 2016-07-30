@@ -64,7 +64,7 @@ void DbManager::addHistoryItem(const QString &fileName, const int &dateTime, con
 void DbManager::clearHistoryTable()
 {
     QSqlQuery query;
-    query.exec("DELETE FROM table_name;");
+    query.exec("DELETE FROM History;");
 
 }
 

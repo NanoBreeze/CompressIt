@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QFileDialog>
@@ -43,10 +44,15 @@ private slots:
 
     void on_historyTableView_clicked(const QModelIndex &index);
 
-    void resizeEvent ( QResizeEvent * event )
-    {
-            qDebug() << "Resizing happening";
-    };
+    void on_currentFilesTableWidget_clicked(const QModelIndex &index);
+
+    void on_historyDockWidget_visibilityChanged(bool visible);
+
+    void on_action_Stats_toggled(bool arg1);
+
+    void on_statsDockWidget_visibilityChanged(bool visible);
+
+    void on_actionClear_History_triggered();
 
 protected:
     void dropEvent(QDropEvent* event);

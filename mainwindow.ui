@@ -57,7 +57,6 @@
     </property>
     <addaction name="action_Load"/>
     <addaction name="separator"/>
-    <addaction name="actionClear_Stats"/>
     <addaction name="actionClear_History"/>
    </widget>
    <widget class="QMenu" name="menu_vie">
@@ -182,7 +181,7 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="statsTableView">
+  <widget class="QDockWidget" name="statsDockWidget">
    <property name="minimumSize">
     <size>
      <width>150</width>
@@ -298,6 +297,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Stats</string>
    </property>
@@ -327,11 +329,6 @@
    </property>
    <property name="text">
     <string>Huffman</string>
-   </property>
-  </action>
-  <action name="actionClear_Stats">
-   <property name="text">
-    <string>Clear Stats</string>
    </property>
   </action>
   <action name="actionClear_History">

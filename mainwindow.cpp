@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setAcceptDrops(true);
 
+
     ui->statusBar->showMessage("This is the status bar");
 
 }
@@ -76,6 +77,8 @@ void MainWindow::on_action_Load_triggered()
     }
 }
 
+//these two methods "on_action_History_toggled" and "on_historyDockWidget_visibilityChanged" are like observables
+//there might be an existing function that handles visibility changes
 //toggles whether to show or hide History dock widget
 void MainWindow::on_action_History_toggled(bool arg1)
 {
@@ -84,9 +87,26 @@ void MainWindow::on_action_History_toggled(bool arg1)
     qDebug() << QString(arg1);
 }
 
+void MainWindow::on_historyDockWidget_visibilityChanged(bool visible)
+{
+    ui->action_History->setChecked(visible);
+}
+
+void MainWindow::on_action_Stats_toggled(bool arg1)
+{
+    if (arg1) { ui->statsDockWidget->show(); }
+    else { ui->statsDockWidget->hide(); }
+}
+
+
+void MainWindow::on_statsDockWidget_visibilityChanged(bool visible)
+{
+    ui->action_Stats->setChecked(visible);
+}
+
+
 void MainWindow::on_historyTableView_clicked(const QModelIndex &index)
 {
-    qDebug() << "The size of the stats dock table is: " << ui->historyDockWidget->height();
 
     if (index.isValid())
     {
@@ -133,6 +153,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
     event->accept();
 }
 
+//user can drag-drop file to add file to the "to be compressed" queue
 void MainWindow::dropEvent(QDropEvent *event)
 {
 
@@ -182,4 +203,29 @@ double MainWindow::getFileSize(const QUrl &url)
 
     qDebug() << file.size();
     return file.size();
+}
+
+void MainWindow::on_currentFilesTableWidget_clicked(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        int rowIndex = index.row();
+        ui->currentFilesTableWidget->selectRow(rowIndex);
+    }
+}
+
+
+//asks if user is sure to delete history and then clears the model.
+//Might consider using Observer pattern later when compression algos implemented and appending new entries
+void MainWindow::on_actionClear_History_triggered()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this,
+                                  "Clear History", "Are you sure you want to clear history of previously compressed files?",
+                                  QMessageBox::Yes|QMessageBox::No);
+
+    if (reply == QMessageBox::Yes)
+    {
+        DbManager::getDbManager().clearHistoryTable();
+    }
 }
