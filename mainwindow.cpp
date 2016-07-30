@@ -2,18 +2,25 @@
 #include "ui_mainwindow.h"
 
 
-#include <QFileDialog>
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    setupHistoryTableView();
+    setupCurrentFilesTableWidget();
+
+    ui->statusBar->showMessage("This is the status bar");
+
+}
+
+void MainWindow::setupHistoryTableView()
+{
     //adding layout to historyDockWidget to enable it resizes. Adding this in Qt Designer won't make resizing happen!
     QGridLayout*vertLayout = new QGridLayout(this);
-vertLayout->addWidget(ui->historyTableView);
-ui->historyDockWidgetContents->setLayout(vertLayout);
+    vertLayout->addWidget(ui->historyTableView);
+    ui->historyDockWidgetContents->setLayout(vertLayout);
 
     QSqlQueryModel* model = new QSqlQueryModel(this);
 
@@ -31,19 +38,18 @@ ui->historyDockWidgetContents->setLayout(vertLayout);
     ui->historyTableView->setSortingEnabled(true);
     ui->historyTableView->setColumnHidden(0, true); //hides the id column
     ui->historyTableView->verticalHeader()->setHidden(true);
-//    ui->historyTableView->resizeColumnToContents(0);
-//    ui->historyTableView->resizeColumnToContents(1);
-//    ui->historyTableView->resizeColumnToContents(2);
+}
 
-//    QRect rect = ui->historyTableView->geometry();
-//    rect.setWidth(2 + ui->historyTableView->verticalHeader()->width() +
-//            ui->historyTableView->columnWidth(0) + ui->historyTableView->columnWidth(1) + ui->historyTableView->columnWidth(2));
-//    ui->historyTableView->setGeometry(rect);
-//    ui->historyTableView->horizontalHeader()->stretchLastSection();
-//    ui->historyTableView->verticalHeader()->stretchLastSection();
+void MainWindow::setupCurrentFilesTableWidget()
+{
+    ui->currentFilesTableWidget->setColumnCount(5);
+    ui->currentFilesTableWidget->setRowCount(2);
 
-
-    ui->statusBar->showMessage("This is the status bar");
+    ui->currentFilesTableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem("File"));
+    ui->currentFilesTableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("Size"));
+    ui->currentFilesTableWidget->setHorizontalHeaderItem(2, new QTableWidgetItem("Progress"));
+    ui->currentFilesTableWidget->setHorizontalHeaderItem(3, new QTableWidgetItem("Compressed Size"));
+    ui->currentFilesTableWidget->setHorizontalHeaderItem(4, new QTableWidgetItem("Ratio"));
 
 }
 
@@ -53,23 +59,39 @@ MainWindow::~MainWindow()
 }
 
 
-//opens a file browser for user to choose which file to compress
+//opens a file browser for user to choose which file to compress, and add the chosen file names and size to
+//tableview containing all to-be-compressed files
 void MainWindow::on_action_Load_triggered()
 {
-    QString selectedFile = QFileDialog::getOpenFileName(this, "Load file");
+    QList<QUrl> selectedFileUrls = fileDialog.getOpenFileUrls(this, "Load file");
 
-    qDebug() << selectedFile;
+    for (const QUrl url: selectedFileUrls)
+    {
+
+        QString fileUrl = url.toString().right(url.toString().count() - 8);
+        qDebug() << "The fileUrl is: " << fileUrl;
+
+        QFile file(fileUrl);
+        Q_ASSERT( file.exists()); //since the user selected the file, it must exist!
+
+        QFileInfo fileInfo(file.fileName()); //us
+
+        QString fileName = fileInfo.fileName();
+        double fileSize = file.size();
+
+        qDebug() << fileName;
+        qDebug() << fileSize;
+
+
+        displayFileData(fileName, fileSize);
+    }
 }
 
 //toggles whether to show or hide History dock widget
 void MainWindow::on_action_History_toggled(bool arg1)
 {
-    if (arg1) {
-        ui->historyDockWidget->show();
-    }
-    else {
-        ui->historyDockWidget->hide();
-    }
+    if (arg1) { ui->historyDockWidget->show(); }
+    else { ui->historyDockWidget->hide(); }
     qDebug() << QString(arg1);
 }
 
@@ -103,4 +125,14 @@ void MainWindow::populateStatsDockWidget(const int& id) const
     ui->executionTime_lbl->setText(QString::number(historyItem.executionTime));
     ui->compressionRatio_lbl->setText(QString::number(historyItem.compressionRatio));
     ui->notes_lbl->setText(historyItem.notes);
+}
+
+
+void MainWindow::displayFileData(const QString& fileName, const double& fileSize)
+{
+    ui->currentFilesTableWidget->insertRow(ui->currentFilesTableWidget->rowCount());
+    int lastRowIndex = ui->currentFilesTableWidget->rowCount() - 1;
+    ui->currentFilesTableWidget->setItem(lastRowIndex, 0, new QTableWidgetItem(fileName));
+    ui->currentFilesTableWidget->setItem(lastRowIndex, 1, new QTableWidgetItem(QString::number(fileSize)));
+
 }

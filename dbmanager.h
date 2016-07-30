@@ -10,7 +10,6 @@
 #include <QDir>
 #include <QFile>
 
-#include <QtGlobal>
 #include "historyitem.h"
 
 //manages all database interactions, initializing, reading and writing data

@@ -6,6 +6,10 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 #include <QGridLayout>
+#include <QFileDialog>
+#include <QUrl>
+#include <QFileInfo>
+#include <QFile>
 
 #include <QDebug>
 
@@ -44,8 +48,11 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QFileDialog fileDialog;
     void populateStatsDockWidget(const int& id) const; //populate with the stats associated with the record with the given id
-
+    void setupCurrentFilesTableWidget(); //sets the horizontal headers, number of columns and rows
+    void setupHistoryTableView(); //sets the model and resizing capabilities of the history table view
+    void displayFileData(const QString& fileName, const double& fileSize); //populates currentFilesTableWidget with the data associated with the file
 };
 
 #endif // MAINWINDOW_H
