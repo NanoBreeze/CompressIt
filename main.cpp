@@ -21,7 +21,10 @@ int main(int argc, char *argv[])
     dbManager.connectHistoryTable("C://Users//Lenny//Documents//CompressIt//database.db");
     HistoryItem h = dbManager.getHistoryItem(2);
     qDebug() << h.originalSize;
-//    dbManager.addHistoryItem("newFile", 56, 12.5, 45.9, 65.8, 7897.5, "notes");
+//    for (int i = 0 ; i < 20; i++)
+//    {
+//    dbManager.addHistoryItem("newFile" + QString(i), i, i, i, i, i, "notes" + QString(i));
+//    }
     MainWindow w;
     w.show();
     return a.exec();

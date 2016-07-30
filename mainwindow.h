@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QVBoxLayout>
+#include <QGridLayout>
+
+#include <QDebug>
 
 #include <QSqlQueryModel>
 #include <QSqlQuery>
@@ -31,6 +35,12 @@ private slots:
     void on_action_History_toggled(bool arg1);
 
     void on_historyTableView_clicked(const QModelIndex &index);
+
+    void resizeEvent ( QResizeEvent * event )
+    {
+            qDebug() << "Resizing happening";
+    };
+
 
 private:
     Ui::MainWindow *ui;

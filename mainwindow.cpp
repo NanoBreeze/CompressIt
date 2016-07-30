@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
 
 #include <QFileDialog>
 
@@ -10,6 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //adding layout to historyDockWidget to enable it resizes. Adding this in Qt Designer won't make resizing happen!
+    QGridLayout*vertLayout = new QGridLayout(this);
+vertLayout->addWidget(ui->historyTableView);
+ui->historyDockWidgetContents->setLayout(vertLayout);
 
     QSqlQueryModel* model = new QSqlQueryModel(this);
 
@@ -27,6 +31,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->historyTableView->setSortingEnabled(true);
     ui->historyTableView->setColumnHidden(0, true); //hides the id column
     ui->historyTableView->verticalHeader()->setHidden(true);
+//    ui->historyTableView->resizeColumnToContents(0);
+//    ui->historyTableView->resizeColumnToContents(1);
+//    ui->historyTableView->resizeColumnToContents(2);
+
+//    QRect rect = ui->historyTableView->geometry();
+//    rect.setWidth(2 + ui->historyTableView->verticalHeader()->width() +
+//            ui->historyTableView->columnWidth(0) + ui->historyTableView->columnWidth(1) + ui->historyTableView->columnWidth(2));
+//    ui->historyTableView->setGeometry(rect);
+//    ui->historyTableView->horizontalHeader()->stretchLastSection();
+//    ui->historyTableView->verticalHeader()->stretchLastSection();
 
 
     ui->statusBar->showMessage("This is the status bar");
@@ -61,6 +75,8 @@ void MainWindow::on_action_History_toggled(bool arg1)
 
 void MainWindow::on_historyTableView_clicked(const QModelIndex &index)
 {
+    qDebug() << "The size of the stats dock table is: " << ui->historyDockWidget->height();
+
     if (index.isValid())
     {
         int rowIndex = index.row();
