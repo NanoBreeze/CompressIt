@@ -16,12 +16,18 @@ CONFIG += c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     testmainwindow.cpp \
-    dbmanager.cpp
+    dbmanager.cpp \
+    testing.cpp \
+    prefixtreenode.cpp \
+    prefixtree.cpp
 
 HEADERS  += mainwindow.h \
     testmainwindow.h \
     dbmanager.h \
-    historyitem.h
+    historyitem.h \
+    testing.h \
+    prefixtreenode.h \
+    prefixtree.h
 
 FORMS    += mainwindow.ui \
     testmainwindow.ui
