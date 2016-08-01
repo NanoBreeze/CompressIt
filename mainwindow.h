@@ -54,6 +54,13 @@ private slots:
 
     void on_actionClear_History_triggered();
 
+    void on_actionCompressIt_triggered();
+
+    void refreshHistoryTableView();
+
+signals:
+    void databaseChanged(); //signal to indicate the database is changed. Attached slot refreshes the historyTableView to accomodate newly changed values
+
 protected:
     void dropEvent(QDropEvent* event);
     void dragEnterEvent(QDragEnterEvent* event);
@@ -61,6 +68,8 @@ protected:
 private:
     Ui::MainWindow *ui;
     QFileDialog fileDialog;
+    QSqlQueryModel* historyTableViewModel = nullptr;
+    QSortFilterProxyModel* historyTableViewProxyModel = nullptr;
     void populateStatsDockWidget(const int& id) const; //populate with the stats associated with the record with the given id
     void setupCurrentFilesTableWidget(); //sets the horizontal headers, number of columns and rows
     void setupHistoryTableView(); //sets the model and resizing capabilities of the history table view

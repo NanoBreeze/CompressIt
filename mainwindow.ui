@@ -76,6 +76,7 @@
      </property>
      <addaction name="actionHuffman"/>
      <addaction name="actionArithmetic"/>
+     <addaction name="actionLZ77"/>
     </widget>
     <addaction name="menuCompression_Algorithms"/>
    </widget>
@@ -176,7 +177,7 @@
       <bool>true</bool>
      </attribute>
      <attribute name="verticalHeaderStretchLastSection">
-      <bool>true</bool>
+      <bool>false</bool>
      </attribute>
     </widget>
    </widget>
@@ -349,6 +350,11 @@
   <action name="actionArithmetic">
    <property name="text">
     <string>Arithmetic</string>
+   </property>
+  </action>
+  <action name="actionLZ77">
+   <property name="text">
+    <string>LZ77</string>
    </property>
   </action>
  </widget>

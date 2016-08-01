@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setAcceptDrops(true);
 
+    connect(this, SIGNAL(databaseChanged()), this, SLOT(refreshHistoryTableView()));
 
     ui->statusBar->showMessage("This is the status bar");
 
@@ -25,19 +26,21 @@ void MainWindow::setupHistoryTableView()
     vertLayout->addWidget(ui->historyTableView);
     ui->historyDockWidgetContents->setLayout(vertLayout);
 
-    QSqlQueryModel* model = new QSqlQueryModel(this);
+    historyTableViewModel= new QSqlQueryModel(this);
 
-    model->setQuery("SELECT id, fileName, dateTime, compressionRatio FROM History");
+    historyTableViewModel->setQuery("SELECT id, fileName, dateTime, compressionRatio FROM History");
 
-    model->setHeaderData(0, Qt::Horizontal, QString("Id"));
-    model->setHeaderData(1, Qt::Horizontal, QString("File"));
-    model->setHeaderData(2, Qt::Horizontal, QString("Date/Time"));
-    model->setHeaderData(3, Qt::Horizontal, QString("Compression Ratio"));
+    historyTableViewModel->setHeaderData(0, Qt::Horizontal, QString("Id"));
+    historyTableViewModel->setHeaderData(1, Qt::Horizontal, QString("File"));
+    historyTableViewModel->setHeaderData(2, Qt::Horizontal, QString("Date/Time"));
+    historyTableViewModel->setHeaderData(3, Qt::Horizontal, QString("Compression Ratio"));
 
-    QSortFilterProxyModel *m=new QSortFilterProxyModel(this);
-    m->setDynamicSortFilter(true);
-    m->setSourceModel(model);
-    ui->historyTableView->setModel(m);
+    historyTableViewProxyModel=new QSortFilterProxyModel(this);
+//    historyTableViewProxyModel->setDynamicSortFilter(true);
+    historyTableViewProxyModel->setSourceModel(historyTableViewModel);
+    ui->historyTableView->setModel(historyTableViewProxyModel);
+
+
     ui->historyTableView->setSortingEnabled(true);
     ui->historyTableView->setColumnHidden(0, true); //hides the id column
     ui->historyTableView->verticalHeader()->setHidden(true);
@@ -46,7 +49,6 @@ void MainWindow::setupHistoryTableView()
 void MainWindow::setupCurrentFilesTableWidget()
 {
     ui->currentFilesTableWidget->setColumnCount(5);
-    ui->currentFilesTableWidget->setRowCount(2);
 
     ui->currentFilesTableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem("File"));
     ui->currentFilesTableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("Size"));
@@ -156,7 +158,6 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 //user can drag-drop file to add file to the "to be compressed" queue
 void MainWindow::dropEvent(QDropEvent *event)
 {
-
     const QMimeData* mimeData = event->mimeData();
 
     // check for our needed mime type, here a file or a list of files
@@ -227,5 +228,21 @@ void MainWindow::on_actionClear_History_triggered()
     if (reply == QMessageBox::Yes)
     {
         DbManager::getDbManager().clearHistoryTable();
+        emit databaseChanged();
     }
+}
+
+//intended to trigger compressing the files. For now, just insert a record into database
+void MainWindow::on_actionCompressIt_triggered()
+{
+    DbManager::getDbManager().addHistoryItem("compressedFileName", 234234, 12, 48, 4.0, 522, "These are the notes for the compressed file");
+    emit databaseChanged();
+}
+
+
+void MainWindow::refreshHistoryTableView()
+{
+    qDebug() << "refreshHistoryTableView called";
+    historyTableViewModel->setQuery("SELECT id, fileName, dateTime, compressionRatio FROM History");
+
 }
