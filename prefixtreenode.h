@@ -9,7 +9,7 @@ class PrefixTreeNode
 {
 public:
     PrefixTreeNode();
-    bool isLastCharacter;
+    bool isLastLetter;
     QChar letter;
     QList<PrefixTreeNode*> children;
 

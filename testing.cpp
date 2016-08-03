@@ -5,6 +5,10 @@ Testing::Testing()
 
 }
 
+//PrefixTreeNode Testing::returnPointer(PrefixTreeNode *node)
+//{
+//    return node;
+//}
 
 void Testing::readFile(const QString &filePath)
 {

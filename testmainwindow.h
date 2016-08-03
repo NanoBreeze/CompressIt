@@ -12,6 +12,11 @@
 #include <QSqlQuery>
 #include <QDir>
 
+#include <QFileSystemModel>
+#include <QQueue>
+
+#include "prefixtree.h"
+
 //#include "historyitem.h"
 
 

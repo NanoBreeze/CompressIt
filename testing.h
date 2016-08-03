@@ -23,6 +23,8 @@ public:
     int getLetterIndex(const QChar& letter);
 
     PrefixTreeNode root;
+
+//    PrefixTreeNode returnPointer(PrefixTreeNode* node);
 };
 
 #endif // TESTING_H

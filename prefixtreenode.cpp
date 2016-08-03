@@ -1,6 +1,6 @@
 #include "prefixtreenode.h"
 
-PrefixTreeNode::PrefixTreeNode() : isLastCharacter(false)
+PrefixTreeNode::PrefixTreeNode() : isLastLetter(false)
 {
 
 }
