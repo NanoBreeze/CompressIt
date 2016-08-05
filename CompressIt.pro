@@ -19,15 +19,19 @@ SOURCES += main.cpp\
     dbmanager.cpp \
     testing.cpp \
     prefixtreenode.cpp \
-    prefixtree.cpp
+    prefixtree.cpp \
+    Algorithms/huffman.cpp \
+    Algorithms/huffmannode.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  +=    mainwindow.h \
     testmainwindow.h \
     dbmanager.h \
     historyitem.h \
     testing.h \
     prefixtreenode.h \
-    prefixtree.h
+    prefixtree.h \
+    Algorithms/huffman.h \
+    Algorithms/huffmannode.h
 
 FORMS    += mainwindow.ui \
     testmainwindow.ui

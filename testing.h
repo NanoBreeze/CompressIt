@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <typeinfo>
 #include <QCharRef>
+#include <QHash>
 
 #include "prefixtreenode.h"
 
@@ -25,6 +26,15 @@ public:
     PrefixTreeNode root;
 
 //    PrefixTreeNode returnPointer(PrefixTreeNode* node);
+
+private:
+    QHash<QChar, int> charCounts; //contains the number of time each character occurs
+    void countCharsInString(const QString& s);  //appends key/values to charCounts
+
+    int totalCharacterCount;
+
+    QHash<QChar, double> charFrequencies; //contains the probability/frequency of each character appearing.
+    void createCharFrequency(); //uses values in charCounts to populate charFrequencies with probability of each character
 };
 
 #endif // TESTING_H

@@ -1,6 +1,6 @@
 #include "testing.h"
 
-Testing::Testing()
+Testing::Testing() : totalCharacterCount(0)
 {
 
 }
@@ -19,14 +19,38 @@ void Testing::readFile(const QString &filePath)
         while (!textStream.atEnd())
         {
             QString line = textStream.readLine();
+            countCharsInString(line);
             qDebug() << line;
         }
         file.close();
+        createCharFrequency();
     }
     else {
         qDebug() << "The specified file can't be opened";
     }
 }
+
+void Testing::countCharsInString(const QString &s)
+{
+    for (QChar c: s)
+    {
+        totalCharacterCount++;
+        charCounts[c]++;
+    }
+}
+
+void Testing::createCharFrequency()
+{
+    QHash<QChar, int>::const_iterator i = charCounts.constBegin();
+
+    while (i != charCounts.constEnd())
+    {
+        charFrequencies[i.key()] = (double)i.value()/(double)totalCharacterCount;
+        ++i;
+    }
+}
+
+
 //
 void Testing::buildPrefixTree(const QStringList &words)
 {
