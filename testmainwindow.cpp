@@ -6,18 +6,12 @@ TestMainWindow::TestMainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-        QStringList stringList;
-    stringList << "twice" << "once" << "ab" << "twiceeee" << "twi" << "a" << "b";
-    //    testing.buildPrefixTree(stringList);
-
-    PrefixTree prefixTree;
-    prefixTree.insertWords(stringList);
-
-
     QStandardItemModel *standardModel = new QStandardItemModel(this);
 
-    prefixTree.populateModel(standardModel);
-
+    Huffman huffman;
+    huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
+    huffman.populateItemModel(standardModel);
+    huffman.printCharEncodings();
     ui->treeView->setModel(standardModel);
     ui->treeView->expandAll();
 

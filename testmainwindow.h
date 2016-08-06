@@ -14,6 +14,8 @@
 
 #include <QFileSystemModel>
 #include <QQueue>
+#include "Algorithms/huffman.h"
+#include "Algorithms/huffmannode.h"
 
 #include "prefixtree.h"
 

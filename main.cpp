@@ -23,8 +23,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    TestMainWindow testMainWindow;
-//    testMainWindow.show();
+    TestMainWindow testMainWindow;
+    testMainWindow.show();
 
 //    QMap<QString, int> ses; //all nodes we operate on come from this (sorted) map ses.insert("one", 1);
 //    ses.insert("two", 2);
@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
 //        qDebug() << "Key: " << i.key() << "; Value: " << i.value();
 //        ++i;
 //    }
-        Huffman huffman;
-        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
-        huffman.printNodesWithoutChildren();
+//        Huffman huffman;
+//        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
+//        huffman.printNodesWithoutChildren();
 //    QStringList stringList;
 //    stringList << "twice" << "once" << "ab" << "twiceeee" << "twi";
     //    testing.buildPrefixTree(stringList);
