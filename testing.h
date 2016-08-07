@@ -10,6 +10,7 @@
 #include <typeinfo>
 #include <QCharRef>
 #include <QHash>
+#include <QByteArray>
 
 #include "prefixtreenode.h"
 
@@ -18,6 +19,7 @@ class Testing
 public:
     Testing();
 
+    void experimentOnByteArray();
     void readFile(const QString& filePath);
     void buildPrefixTree(const QStringList& words);
     bool search(const QString& word);

@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     prefixtreenode.cpp \
     prefixtree.cpp \
     Algorithms/huffman.cpp \
-    Algorithms/huffmannode.cpp
+    Algorithms/huffmannode.cpp \
+    Algorithms/code.cpp
 
 HEADERS  +=    mainwindow.h \
     testmainwindow.h \
@@ -31,7 +32,8 @@ HEADERS  +=    mainwindow.h \
     prefixtreenode.h \
     prefixtree.h \
     Algorithms/huffman.h \
-    Algorithms/huffmannode.h
+    Algorithms/huffmannode.h \
+    Algorithms/code.h
 
 FORMS    += mainwindow.ui \
     testmainwindow.ui

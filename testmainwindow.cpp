@@ -11,7 +11,7 @@ TestMainWindow::TestMainWindow(QWidget *parent) :
     Huffman huffman;
     huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
     huffman.populateItemModel(standardModel);
-    huffman.printCharEncodings();
+    huffman.printCodewordLengths();
     ui->treeView->setModel(standardModel);
     ui->treeView->expandAll();
 

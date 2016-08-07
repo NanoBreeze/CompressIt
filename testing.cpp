@@ -5,6 +5,13 @@ Testing::Testing() : totalCharacterCount(0)
 
 }
 
+void Testing::experimentOnByteArray()
+{
+    QByteArray ba("Hello");
+    QByteArray hex = ba.toHex();
+    qDebug() << hex;
+}
+
 //PrefixTreeNode Testing::returnPointer(PrefixTreeNode *node)
 //{
 //    return node;

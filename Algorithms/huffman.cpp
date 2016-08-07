@@ -24,7 +24,9 @@ void Huffman::compress(const QString &filePath)
     readFile(filePath);
     createNodesFromFrequency(charCounts);
     root = constructHuffmanTree(nodesWithoutParent);
-    encodeChar(root, "");
+    createCodewordLengths(root, 0);
+    sortCanonically(codes);
+    assignCanonicalCodewords(codes);
 
 }
 
@@ -106,23 +108,60 @@ HuffmanNode* Huffman::constructHuffmanTree(QMultiMap<int, HuffmanNode *> & nodes
     return constructHuffmanTree(nodesWithoutParents);
 }
 
-void Huffman::encodeChar(HuffmanNode *root, QString encoding)
+void Huffman::createCodewordLengths(HuffmanNode *root, int length)
 {
     Q_ASSERT(root != nullptr); //if the children of a node are null, call this method again
 
-    qDebug() << "Inside encodeChar. Current encoding is: " << encoding;
+//    qDebug() << "Inside encodeChar. Current length is: " << length ;
     //this is an original node containing only one character. Both of its children are null
     if (root->left == nullptr)
     {
-        qDebug() << "Inside if statment. Thus, node with only one char. Current encoding: " << encoding;
+//        qDebug() << "Inside if statment. Thus, node with only one char. Current length: " << length;
         Q_ASSERT(root->right == nullptr);
 
-        charEncodings.insert(QString(root->characters).at(0), encoding);
+        Code code(QString(root->characters).at(0), length);
+        codes.append(code);
+//        qDebug() << QString(root->characters).at(0) << " : " << QString::number(length);
+//        codeWordLengths.insert(QString(root->characters).at(0), length);
         return;
     }
+    length++;
+    createCodewordLengths(root->left, length);
+    createCodewordLengths(root->right, length);
+}
 
-    encodeChar(root->left, encoding + "0");
-    encodeChar(root->right, encoding + "1");
+void Huffman::sortCanonically(QList<Code> &codes)
+{
+    qSort(codes);
+}
+
+//Algorithm from https://en.wikipedia.org/wiki/Canonical_Huffman_code
+void Huffman::assignCanonicalCodewords(QList<Code> &codes)
+{
+    //the codes are sorted in ascending order. 0th element is the smallest
+//    int leadingZeroPadCount = codes[0].codewordLength - 1;
+
+    int previousCodeword = -1; //used to determine next codeword. Added to and bitshifted
+    int previousCodewordLength = 0; //determines number of bitshifts to perform on current code
+
+    for(Code& code: codes)
+    {
+        previousCodeword = (previousCodeword + 1) << ((code.codewordLength) - previousCodewordLength);
+        previousCodewordLength = code.codewordLength;
+        int currentCodeword = previousCodeword;
+
+        QString paddedCodeword = padLeftZeros(currentCodeword, code.codewordLength);
+        qDebug() << code.symbol << " : " << paddedCodeword;
+        code.codeword = paddedCodeword;
+    }
+}
+
+//adds additional zeros to front of codeword, if necessary, so that the codeword is long enough
+QString Huffman::padLeftZeros(const int& codeword, const int& requiredCodewordLength)
+{
+    int currentLength = QString::number(codeword, 2).length();
+    QString zeros(requiredCodewordLength - currentLength, '0');
+    return zeros + QString::number(codeword, 2);
 }
 
 
@@ -165,14 +204,19 @@ void Huffman::printNodesWithoutChildren()
 }
 
 
-void Huffman::printCharEncodings()
+void Huffman::printCodewordLengths()
 {
-    QHash<QChar, QString>::const_iterator i = charEncodings.constBegin();
-    while (i != charEncodings.constEnd())
+    foreach(Code code, codes)
     {
-        qDebug() << i.key() << " : " << i.value();
-        ++i;
+        qDebug() << code.symbol << " : " << code.codewordLength;
     }
+
+//    QHash<QChar, int>::const_iterator i = codeWordLengths.constBegin();
+//    while (i != codeWordLengths.constEnd())
+//    {
+//        qDebug() << i.key() << " : " << i.value();
+//        ++i;
+//    }
 }
 
 
