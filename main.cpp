@@ -23,13 +23,13 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    TestMainWindow testMainWindow;
-    testMainWindow.show();
+//    TestMainWindow testMainWindow;
+//    testMainWindow.show();
 //    Testing testing;
 //    testing.experimentOnByteArray();
 
-//        Huffman huffman;
-//        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
+        Huffman huffman;
+        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
 //        huffman.printNodesWithoutChildren();
     //    DbManager dbManager = DbManager::getDbManager();
     //    dbManager.connectHistoryTable("C://Users//Lenny//Documents//CompressIt//database.db");

@@ -7,9 +7,32 @@ Testing::Testing() : totalCharacterCount(0)
 
 void Testing::experimentOnByteArray()
 {
-    QByteArray ba("Hello");
-    QByteArray hex = ba.toHex();
-    qDebug() << hex;
+    //representing hex
+    QString a = "11100011";
+    int integer = a.toInt(0, 2);
+//    qDebug() << "The integer is: " << QString::number(integer);
+
+//	QByteArray array = QByteArray::fromHex(QString::number(integer));
+//      qDebug() << "The hexadecimal is: " << QString::number(integer, 16);
+
+    QFile file("C://Users//Lenny//Desktop//WriteBin.bin");
+    file.open(QIODevice::WriteOnly);
+    QDataStream out(&file);
+
+    out << (qint8)integer;
+
+    file.close();
+
+
+
+
+//    QByteArray ba("Hello");
+//    QByteArray hex = ba.toHex();
+//    qDebug() << hex;
+//    QFile file("C://Users//Lenny//Desktop//WriteBin.dat");
+//    file.open(QIODevice::WriteOnly);
+//    file.write(hex);
+//    file.close();
 }
 
 //PrefixTreeNode Testing::returnPointer(PrefixTreeNode *node)

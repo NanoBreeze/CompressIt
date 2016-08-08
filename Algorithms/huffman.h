@@ -13,6 +13,7 @@
 #include <QQueue>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QDataStream>
 
 #include "huffmannode.h"
 #include "code.h"
@@ -56,6 +57,7 @@ private:
     void assignCanonicalCodewords(QList<Code>&); //assigns codewords, eg, 100, 110 to values
     QString padLeftZeros(const int& codeword, const int& requiredCodewordLength); //left pads the given string with specified amount of 0s
 
+    void writeBinaryFile();
     HuffmanNode* createNode(const QString &chars, const int &frequency); //used to create the very bottom (initial) nodes, who don't have children
     HuffmanNode* createNode(HuffmanNode* leftChild, HuffmanNode* rightChild); //used to create nodes that aren't at the very bottom
 

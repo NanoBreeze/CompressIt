@@ -11,6 +11,7 @@
 #include <QCharRef>
 #include <QHash>
 #include <QByteArray>
+#include <QDataStream>
 
 #include "prefixtreenode.h"
 

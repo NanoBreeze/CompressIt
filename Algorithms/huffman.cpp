@@ -27,6 +27,7 @@ void Huffman::compress(const QString &filePath)
     createCodewordLengths(root, 0);
     sortCanonically(codes);
     assignCanonicalCodewords(codes);
+    writeBinaryFile();
 
 }
 
@@ -171,6 +172,24 @@ void Huffman::countCharsInString(const QString &s)
     {
         charCounts[c]++;
     }
+}
+
+void Huffman::writeBinaryFile()
+{
+    //representing hex
+    QString a = "11100011";
+    int integer = a.toInt(0, 2);
+    qDebug() << "The integer is: " << QString::number(integer);
+
+
+    QFile file("C://Users//Lenny//Desktop//WriteBinary.bin");
+    file.open(QIODevice::WriteOnly);
+    QDataStream out(&file);
+
+    out << (qint8)integer;
+
+    file.close();
+
 }
 
 HuffmanNode* Huffman::createNode(const QString &chars, const int &frequency)
