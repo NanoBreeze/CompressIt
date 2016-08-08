@@ -39,7 +39,8 @@ private:
     QMultiMap<int, HuffmanNode*> nodesWithoutParent; //all nodes we operate on come from this (sorted) map
 
     QList<Code> codes; //stores the codes
-//    QHash<QChar, int> codeWordLengths; //contains the 0s and 1s pattern for each character
+    QString text; //stores the text of the read file. Used when encoding characters with canonical Huffman. Might change later because this takes up too much space
+    QString encodedText; //binary string of the text from canonical Huffman encoding
 
     HuffmanNode* root = nullptr; //the root of the Huffman tree. Found when there exists only one node remaining in the QMultiMap
     void countCharsInString(const QString& s);  //appends key/values to charCounts
@@ -57,7 +58,12 @@ private:
     void assignCanonicalCodewords(QList<Code>&); //assigns codewords, eg, 100, 110 to values
     QString padLeftZeros(const int& codeword, const int& requiredCodewordLength); //left pads the given string with specified amount of 0s
 
-    void writeBinaryFile();
+    void encodeText(const QString& text); //encodes the text from the read file with the canonical binary encodingS
+    QList<int> byteAlignEncodedText(const QString& encodedText); //make encoded binary text into 8-bit chunks so that they can be hex-represented. The final chunk will have padded 0s AT END!
+
+    void writeBinaryFile(const QList<int>&); //turns the ints into hex values and write them to binary file
+
+    int getNumberOfCodesOfBitLength(const int& length); //returns the number of codes whose codeword is of the specified lenght
     HuffmanNode* createNode(const QString &chars, const int &frequency); //used to create the very bottom (initial) nodes, who don't have children
     HuffmanNode* createNode(HuffmanNode* leftChild, HuffmanNode* rightChild); //used to create nodes that aren't at the very bottom
 

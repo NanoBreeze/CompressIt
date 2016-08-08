@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
         Huffman huffman;
         huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
 //        huffman.printNodesWithoutChildren();
+
+
+
     //    DbManager dbManager = DbManager::getDbManager();
     //    dbManager.connectHistoryTable("C://Users//Lenny//Documents//CompressIt//database.db");
     //    HistoryItem h = dbManager.getHistoryItem(2);

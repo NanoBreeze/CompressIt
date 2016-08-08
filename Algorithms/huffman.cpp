@@ -27,7 +27,9 @@ void Huffman::compress(const QString &filePath)
     createCodewordLengths(root, 0);
     sortCanonically(codes);
     assignCanonicalCodewords(codes);
-    writeBinaryFile();
+    encodeText(text);
+    QList<int> byteInts = byteAlignEncodedText(encodedText);
+    writeBinaryFile(byteInts);
 
 }
 
@@ -40,6 +42,7 @@ void Huffman::readFile(const QString &filePath)
         while (!textStream.atEnd())
         {
             QString line = textStream.readLine();
+            text += line;	//store the text so it can be encoded after finding the canonical Huffman code associated with each character.
             countCharsInString(line);
             qDebug() << line;
         }
@@ -133,6 +136,7 @@ void Huffman::createCodewordLengths(HuffmanNode *root, int length)
 
 void Huffman::sortCanonically(QList<Code> &codes)
 {
+    //sort codes by codeword length and then symbol
     qSort(codes);
 }
 
@@ -174,22 +178,98 @@ void Huffman::countCharsInString(const QString &s)
     }
 }
 
-void Huffman::writeBinaryFile()
+void Huffman::encodeText(const QString &text)
+{
+    //find the codeword associated with each character and append that to the encodedText
+    foreach(QChar c, text)
+    {
+        QString codeword;
+        //find codeword. Looping is not optimal strategy. Consider using a hash instead
+        foreach(Code code, codes)
+        {
+            if (c == code.symbol)
+            {
+                codeword = code.codeword;
+            }
+        }
+        encodedText += codeword;
+    }
+    qDebug() << "The encodedText is: " << encodedText;
+}
+
+QList<int> Huffman::byteAlignEncodedText(const QString &encodedText)
+{
+
+    QString remainingEncodedText = encodedText;
+    QList<int> byteInts;
+
+    //group every eight bits as a q-int
+    while (remainingEncodedText.length() > 8)
+    {
+        //converts most left 8 bits into a qint8 integer and store in list
+         byteInts.append(remainingEncodedText.left(8).toInt(0,2));
+        remainingEncodedText.remove(0, 8);
+}
+    //if there are 8 or less bits in encoded text, pad additional 0s to end
+
+    int extraZerosCount = 8 - remainingEncodedText.length();
+    QString zeros(extraZerosCount, '0');
+    remainingEncodedText += zeros;
+     byteInts.append(remainingEncodedText.left(8).toInt(0,2));
+
+    return  byteInts;
+
+}
+
+void Huffman::writeBinaryFile(const QList<int>& byteInts)
 {
     //representing hex
-    QString a = "11100011";
-    int integer = a.toInt(0, 2);
-    qDebug() << "The integer is: " << QString::number(integer);
-
-
-    QFile file("C://Users//Lenny//Desktop//WriteBinary.bin");
+    QFile file("C://Users//Lenny//Desktop//WriteBin.bin");
     file.open(QIODevice::WriteOnly);
     QDataStream out(&file);
 
-    out << (qint8)integer;
+    //find number of symbols for each bit-length, starting with 1, 2, 3... for value gets a byte. We assume no more than 15 bit-lengths,
+    QList<int> numberOfSymbolsForEachBitLength;
+    for (int i = 1; i < 16; ++i)
+    {
+     numberOfSymbolsForEachBitLength.append(getNumberOfCodesOfBitLength(i));
+}
+    //write the bit-lengths. Here, assume no more than 255 symbols per count ;)
+    foreach(int symbolCount, numberOfSymbolsForEachBitLength)
+    {
+        qDebug() << (qint8) symbolCount;
+        out << (qint8) symbolCount;
+    }
+
+
+    //write codebook to file
+    foreach(Code code, codes)
+    {
+        qDebug() << (qint8) code.symbol.toLatin1();
+        out << (qint8) code.symbol.toLatin1();
+    }
+
+    //write original text with encoded hex format
+    foreach (int byteInt, byteInts)
+    {
+        out << (qint8)byteInt;
+    }
 
     file.close();
 
+}
+
+int Huffman::getNumberOfCodesOfBitLength(const int &length)
+{
+    int count = 0;
+    foreach(Code code, codes)
+    {
+        if (code.codewordLength == length)
+        {
+            count++;
+        }
+    }
+    return count;
 }
 
 HuffmanNode* Huffman::createNode(const QString &chars, const int &frequency)
