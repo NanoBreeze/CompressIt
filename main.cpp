@@ -19,6 +19,7 @@
 #include <QMap>
 
 #include "Algorithms/huffman.h"
+#include "Algorithms/huffmandecode.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,8 +29,12 @@ int main(int argc, char *argv[])
 //    Testing testing;
 //    testing.experimentOnByteArray();
 
-        Huffman huffman;
-        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
+    HuffmanDecode huffmanDecode;
+    huffmanDecode.decompress("C://Users//Lenny//Desktop//WriteBin.bin");
+
+
+//        Huffman huffman;
+//        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
 //        huffman.printNodesWithoutChildren();
 
 

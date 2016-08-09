@@ -6,7 +6,7 @@
 
 struct Code
 {
-    Code(QChar symbol, int length);
+    Code(QChar symbol, int codewordLength);
     QChar symbol;
     QString codeword; //possibly replace with bits later
     int codewordLength;

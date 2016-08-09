@@ -309,13 +309,6 @@ void Huffman::printCodewordLengths()
     {
         qDebug() << code.symbol << " : " << code.codewordLength;
     }
-
-//    QHash<QChar, int>::const_iterator i = codeWordLengths.constBegin();
-//    while (i != codeWordLengths.constEnd())
-//    {
-//        qDebug() << i.key() << " : " << i.value();
-//        ++i;
-//    }
 }
 
 
