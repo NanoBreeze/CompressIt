@@ -29,14 +29,14 @@ int main(int argc, char *argv[])
 //    Testing testing;
 //    testing.experimentOnByteArray();
 
-    HuffmanDecode huffmanDecode;
-    huffmanDecode.decompress("C://Users//Lenny//Desktop//WriteBin.bin");
 
 
 //        Huffman huffman;
 //        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
 //        huffman.printNodesWithoutChildren();
 
+    HuffmanDecode huffmanDecode;
+    huffmanDecode.decompress("C://Users//Lenny//Desktop//WriteBin.bin");
 
 
     //    DbManager dbManager = DbManager::getDbManager();

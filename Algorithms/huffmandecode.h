@@ -7,7 +7,9 @@
 #include <QDebug>
 #include <QDataStream>
 
+
 #include "code.h"
+#include "prefixtreecodenode.h"
 
 //decodes the binary file WriteBin.bin from "C://Users//Lenny//Desktop//Testing.txt"
 class HuffmanDecode
@@ -34,6 +36,13 @@ private:
     void deduceCanonicalEncoding(QList<Code>&); //finds the encoding associated with each symbol base upon their codelength and canonical algorithm
     QString padLeftZeros(const int& codeword, const int& requiredCodewordLength); //left pads the given string with specified amount of 0s
 
+    PrefixTreeCodeNode root; //root of the prefix tree containing code nodes
+    void createCodewordPrefixTree(QList<Code>&); //enables matching binary patterns in encoded file to the associated symbol
+    QList<QChar> decodeBinaryEncoding(PrefixTreeCodeNode& root); //converts the binary strings (codewords) in file into their respective symbols
+    QString padLeftZeros(const QString& binaryString, const int& zerosNeededCount); //used by decodeBinaryEncoding
+
+    void writeOriginalFile(const QList<QChar>& message); //creates original text in a new file
 };
+
 
 #endif // HUFFMANDECODE_H

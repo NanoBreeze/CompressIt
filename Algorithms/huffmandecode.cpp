@@ -9,9 +9,12 @@ void HuffmanDecode::decompress(const QString &filePath)
 {
     hexString = readFile(filePath);
 
-     getSymbolCountForCodewordLengths();
-     addSymbolsAndCodewordLengths();
-     deduceCanonicalEncoding(codes);
+    getSymbolCountForCodewordLengths();
+    addSymbolsAndCodewordLengths();
+    deduceCanonicalEncoding(codes);
+    createCodewordPrefixTree(codes);
+    QList<QChar> message = decodeBinaryEncoding(root);
+    writeOriginalFile(message);
     //hexString[0] and [1] represent amount of symbols with codeword length 1
     //[2] and [3] with codeword length 2
     //[4] and [5] with codeword length 3
@@ -26,33 +29,33 @@ void HuffmanDecode::decompress(const QString &filePath)
 QString HuffmanDecode::readFile(const QString &filePath)
 {
     QFile file(filePath);
-//    QDataStream dataStreamReader(&file);
+    //    QDataStream dataStreamReader(&file);
     if (file.open(QIODevice::ReadOnly))
     {
-//        dataStreamReader << bytes;
+        //        dataStreamReader << bytes;
 
         bytes = file.readAll();
         return QString(bytes.toHex());
-//        QString miniHexString = hexString.left(8); //first four character of hex string
-//        QString binaryString = QString::number(miniHexString.toLongLong(0, 16), 2);
-//        QByteArray::number()
+        //        QString miniHexString = hexString.left(8); //first four character of hex string
+        //        QString binaryString = QString::number(miniHexString.toLongLong(0, 16), 2);
+        //        QByteArray::number()
 
-//        foreach (auto b, bytes)
-//        {
-//            qDebug() << bytes;
-//        }
-//            bytes.toInt()
-//            foreach (auto b, bytes)
-//            {
-//                qDebug() << bytes;
-//            }
+        //        foreach (auto b, bytes)
+        //        {
+        //            qDebug() << bytes;
+        //        }
+        //            bytes.toInt()
+        //            foreach (auto b, bytes)
+        //            {
+        //                qDebug() << bytes;
+        //            }
 
-//        QTextStream textStream(&file); while (!textStream.atEnd())
-//        {
-//            QString line = textStream.readLine();
-//            text += line;	//store the text so it can be encoded after finding the canonical Huffman code associated with each character.
-//            qDebug() << line;
-//        }
+        //        QTextStream textStream(&file); while (!textStream.atEnd())
+        //        {
+        //            QString line = textStream.readLine();
+        //            text += line;	//store the text so it can be encoded after finding the canonical Huffman code associated with each character.
+        //            qDebug() << line;
+        //        }
         file.close();
     }
     else {
@@ -74,9 +77,9 @@ void HuffmanDecode::getSymbolCountForCodewordLengths()
         hexString = hexString.remove(0, 2);
         symbolCount += byte.toInt(0, 16);
         symbolCountForCodewordLengths[i] = byte.toInt(0, 16);
-//        symbolCountForCodewordLengths[i] = getSymbolCountForCodewordLengths();
+        //        symbolCountForCodewordLengths[i] = getSymbolCountForCodewordLengths();
     }
-//    return byte.toInt(0, 16);
+    //    return byte.toInt(0, 16);
 }
 
 
@@ -127,7 +130,7 @@ void HuffmanDecode::deduceCanonicalEncoding(QList<Code> & codes)
     //consider merging this redundant code
 
     //the codes are sorted in ascending order. 0th element is the smallest
-//    int leadingZeroPadCount = codes[0].codewordLength - 1;
+    //    int leadingZeroPadCount = codes[0].codewordLength - 1;
 
     int previousCodeword = -1; //used to determine next codeword. Added to and bitshifted
     int previousCodewordLength = 0; //determines number of bitshifts to perform on current code
@@ -153,3 +156,112 @@ QString HuffmanDecode::padLeftZeros(const int& codeword, const int& requiredCode
     return zeros + QString::number(codeword, 2);
 }
 
+void HuffmanDecode::createCodewordPrefixTree(QList<Code> &codes)
+{
+    PrefixTreeCodeNode* current = &root;
+
+    foreach(Code code, codes)
+    {
+        qDebug() << "Symbol: " << code.symbol << ". Codeword: " << code.codeword;
+
+        for(int i = 0; i < code.codewordLength; ++i)//insert each bit into the prefix tree
+        {
+            if (code.codeword[i] == '1') //1 goes to the right and make new node if it doesn't already exist, if it does, simply reset current
+            {
+                if (current->right == nullptr)
+                {
+                    PrefixTreeCodeNode* newNode = new PrefixTreeCodeNode();
+                    newNode->digit= code.codeword[i];
+                    current->right = newNode;
+                }
+                current = current->right;
+            }
+            else //0 goes to the left
+            {
+                if (current->left == nullptr)
+                {
+                    PrefixTreeCodeNode* newNode = new PrefixTreeCodeNode();
+                    newNode->digit= code.codeword[i];
+                    current->left = newNode;
+                }
+                current = current->left;
+            }
+        }
+
+        current->isLastDigit = true;
+        current->symbol = code.symbol;
+
+        current = &root;
+    }
+}
+
+QList<QChar> HuffmanDecode::decodeBinaryEncoding(PrefixTreeCodeNode& root)
+{
+    QList<QChar> message;
+
+    PrefixTreeCodeNode* current = &root;
+
+    while (!hexString.isEmpty()) //loop through every hex value
+    {
+        QString hex = hexString.left(1);
+        hexString = hexString.remove(0, 1);
+        //convert this hex into binary and then loop throught the bits
+        QString binaryString = QString::number(hex.toLongLong(0, 16), 2);
+        binaryString = padLeftZeros(binaryString, 4 - binaryString.length());
+
+        for (int i = 0; i < binaryString.length(); ++i)
+        {
+            QChar bit = binaryString[i];
+
+            if (bit == '0') //current goes to the left
+            {
+                current = current->left;
+            }
+            else //else, current goes to the right
+            {
+                Q_ASSERT(bit == '1'); //the binary bit is either 0 or 1
+                current = current->right;
+            }
+
+            if (current->isLastDigit)
+            {
+                //add symbol to message and start current at the root again
+                message.append(current->symbol);
+                qDebug() << "Added symbol: " << current->symbol;
+                current = &root;
+            }
+        }
+
+
+    }
+    qDebug() << message;
+    return message;
+
+}
+
+//adds additional zeros to front of codeword, if necessary, so that the codeword is long enough
+QString HuffmanDecode::padLeftZeros(const QString& binaryString, const int& zerosNeededCount)
+{
+    QString zeros(zerosNeededCount, '0');
+    return zeros + binaryString;
+}
+
+void HuffmanDecode::writeOriginalFile(const QList<QChar>& message) //creates original text in a new file
+{
+    QFile file("C://Users//Lenny//Desktop//WriteOriginal.txt");
+    if (file.open(QIODevice::WriteOnly))
+    {
+    QTextStream textStream(&file);
+
+    foreach(QChar c, message)
+    {
+    textStream << QString(c);
+    }
+
+
+    file.close();
+}
+    else {
+        qDebug() << "The file WriteOriginal.txt couldn't be opened to write to.";
+    }
+}

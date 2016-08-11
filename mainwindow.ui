@@ -77,6 +77,7 @@
      <addaction name="actionHuffman"/>
      <addaction name="actionArithmetic"/>
      <addaction name="actionLZ77"/>
+     <addaction name="actionLZ78"/>
     </widget>
     <addaction name="menuCompression_Algorithms"/>
    </widget>
@@ -355,6 +356,11 @@
   <action name="actionLZ77">
    <property name="text">
     <string>LZ77</string>
+   </property>
+  </action>
+  <action name="actionLZ78">
+   <property name="text">
+    <string>LZ78</string>
    </property>
   </action>
  </widget>

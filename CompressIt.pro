@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     Algorithms/huffman.cpp \
     Algorithms/huffmannode.cpp \
     Algorithms/code.cpp \
-    Algorithms/huffmandecode.cpp
+    Algorithms/huffmandecode.cpp \
+    Algorithms/prefixtreecodenode.cpp
 
 HEADERS  +=    mainwindow.h \
     testmainwindow.h \
@@ -35,7 +36,8 @@ HEADERS  +=    mainwindow.h \
     Algorithms/huffman.h \
     Algorithms/huffmannode.h \
     Algorithms/code.h \
-    Algorithms/huffmandecode.h
+    Algorithms/huffmandecode.h \
+    Algorithms/prefixtreecodenode.h
 
 FORMS    += mainwindow.ui \
     testmainwindow.ui
