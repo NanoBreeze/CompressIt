@@ -34,7 +34,7 @@ public:
     void populateItemModel(QStandardItemModel* model);
 
 private:
-    QHash<QChar, int> charCounts; //contains the number of time each character occurs
+    QHash<QChar, int> symbolFrequency; //contains the number of time each character occurs
 
     QMultiMap<int, HuffmanNode*> nodesWithoutParent; //all nodes we operate on come from this (sorted) map
 
@@ -43,11 +43,11 @@ private:
     QString encodedText; //binary string of the text from canonical Huffman encoding
 
     HuffmanNode* root = nullptr; //the root of the Huffman tree. Found when there exists only one node remaining in the QMultiMap
-    void countCharsInString(const QString& s);  //appends key/values to charCounts
+    void countSymbolFrequency(const QString& s);  //appends key/values to charCounts
     void readFile(const QString& filePath);
 
     //creates HuffmanNodes* associated with each character and their frequency count from the file
-    void createNodesFromFrequency(const QHash<QChar, int>& charCounts);
+    void createNodesFromFrequency(const QHash<QChar, int>& symbolFrequency);
 
     //constructs the Huffman tree with all original nodes at bottom and one at top (root). Returns the root
     HuffmanNode* constructHuffmanTree(QMultiMap<int, HuffmanNode*>&);

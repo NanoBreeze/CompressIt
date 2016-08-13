@@ -21,6 +21,8 @@
 #include "Algorithms/huffman.h"
 #include "Algorithms/huffmandecode.h"
 
+#include "Algorithms/arithmetic.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -35,9 +37,12 @@ int main(int argc, char *argv[])
 //        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
 //        huffman.printNodesWithoutChildren();
 
-    HuffmanDecode huffmanDecode;
-    huffmanDecode.decompress("C://Users//Lenny//Desktop//WriteBin.bin");
+//    HuffmanDecode huffmanDecode;
+//    huffmanDecode.decompress("C://Users//Lenny//Desktop//WriteBin.bin");
 
+
+    Arithmetic arithmetic;
+    arithmetic.compress("C://Users//Lenny//Desktop//Testing.txt");
 
     //    DbManager dbManager = DbManager::getDbManager();
     //    dbManager.connectHistoryTable("C://Users//Lenny//Documents//CompressIt//database.db");

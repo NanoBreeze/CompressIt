@@ -22,7 +22,7 @@ Huffman::Huffman()
 void Huffman::compress(const QString &filePath)
 {
     readFile(filePath);
-    createNodesFromFrequency(charCounts);
+    createNodesFromFrequency(symbolFrequency);
     root = constructHuffmanTree(nodesWithoutParent);
     createCodewordLengths(root, 0);
     sortCanonically(codes);
@@ -43,7 +43,7 @@ void Huffman::readFile(const QString &filePath)
         {
             QString line = textStream.readLine();
             text += line;	//store the text so it can be encoded after finding the canonical Huffman code associated with each character.
-            countCharsInString(line);
+            countSymbolFrequency(line);
             qDebug() << line;
         }
         file.close();
@@ -170,11 +170,11 @@ QString Huffman::padLeftZeros(const int& codeword, const int& requiredCodewordLe
 }
 
 
-void Huffman::countCharsInString(const QString &s)
+void Huffman::countSymbolFrequency(const QString &s)
 {
     for (QChar c: s)
     {
-        charCounts[c]++;
+        symbolFrequency[c]++;
     }
 }
 
