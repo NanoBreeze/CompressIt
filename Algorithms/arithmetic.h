@@ -8,6 +8,7 @@
 #include <QTextStream>
 #include <QMap>
 #include <QList>
+#include <QtMath>
 
 class Arithmetic
 {
@@ -19,6 +20,7 @@ private:
     QMap<QChar, int> symbolFrequency; //contains the number of time each character occurs, thus, used to also find c_j and d_j
     QString text; //stores original data
     QString encoding;
+    QString decoding;
 
     void readFile(const QString& filePath);
     void countSymbolFrequency(const QString& s);  //appends key/values to charCounts
@@ -29,6 +31,8 @@ private:
 
     //determines the character associated with this index to its position in QMap
     int findCharIndex(const QChar& ch) const;
+
+    void decode(const QString& binaryString);
 };
 
 #endif // ARITHMETIC_H
