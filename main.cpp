@@ -23,6 +23,8 @@
 
 #include "Algorithms/arithmetic.h"
 
+#include "Algorithms/lz77.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -32,7 +34,8 @@ int main(int argc, char *argv[])
 //    testing.experimentOnByteArray();
 
 
-
+LZ77 lz77;
+lz77.compress();
 //        Huffman huffman;
 //        huffman.compress("C://Users//Lenny//Desktop//Testing.txt");
 //        huffman.printNodesWithoutChildren();
@@ -41,8 +44,8 @@ int main(int argc, char *argv[])
 //    huffmanDecode.decompress("C://Users//Lenny//Desktop//WriteBin.bin");
 
 
-    Arithmetic arithmetic;
-    arithmetic.compress("C://Users//Lenny//Desktop//Testing.txt");
+//    Arithmetic arithmetic;
+//    arithmetic.compress("C://Users//Lenny//Desktop//Testing.txt");
 
     //    DbManager dbManager = DbManager::getDbManager();
     //    dbManager.connectHistoryTable("C://Users//Lenny//Documents//CompressIt//database.db");
