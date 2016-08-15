@@ -32,7 +32,7 @@ void DbManager::connectHistoryTable(const QString &path)
     query.exec("CREATE TABLE IF NOT EXISTS History "
                "(id integer primary key, "
                "fileName TEXT,"
-               "dateTime INTEGER, "
+               "dateTime TEXT, "
                "compressionRatio REAL, "
                "originalSize REAL, "
                "compressedSize REAL, "
@@ -41,7 +41,7 @@ void DbManager::connectHistoryTable(const QString &path)
                ");");
 }
 
-void DbManager::addHistoryItem(const QString &fileName, const int &dateTime, const double &compressionRatio, const double &originalSize, const double &compressedSize, const double &executionTime, const QString &notes)
+void DbManager::addHistoryItem(const QString &fileName, const QString &dateTime, const double &compressionRatio, const double &originalSize, const double &compressedSize, const double &executionTime, const QString &notes)
 {
     QSqlQuery query;
     query.prepare("INSERT INTO History "
@@ -83,14 +83,14 @@ HistoryItem DbManager::getHistoryItem(const int& id) const
 
     if (query.next())
     {
-        historyItem.id= query.value(query.record().indexOf("id")).toInt();
+        historyItem.id = query.value(query.record().indexOf("id")).toInt();
         historyItem.fileName = query.value(query.record().indexOf("fileName")).toString();  //Get the data from the query
-        historyItem.dateTime = query.value(query.record().indexOf("dateTime")).toInt();
-        historyItem.compressionRatio= query.value(query.record().indexOf("compressionRatio")).toDouble();
-        historyItem.originalSize= query.value(query.record().indexOf("originalSize")).toDouble();
+        historyItem.dateTime = query.value(query.record().indexOf("dateTime")).toString();
+        historyItem.compressionRatio = query.value(query.record().indexOf("compressionRatio")).toDouble();
+        historyItem.originalSize = query.value(query.record().indexOf("originalSize")).toDouble();
         historyItem.compressedSize = query.value(query.record().indexOf("compressedSize")).toDouble();
-        historyItem.executionTime= query.value(query.record().indexOf("executionTime")).toDouble();
-        historyItem.notes= query.value(query.record().indexOf("notes")).toString();
+        historyItem.executionTime = query.value(query.record().indexOf("executionTime")).toDouble();
+        historyItem.notes = query.value(query.record().indexOf("notes")).toString();
     }
 
     //checking that there was indeed only one query returned. BTW, query.size() always returns 0

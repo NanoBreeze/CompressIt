@@ -4,15 +4,15 @@
 #include <QChar>
 #include <QString>
 
-struct Code
+struct HuffmanCode
 {
-    Code(QChar symbol, int codewordLength);
+    HuffmanCode(QChar symbol, int codewordLength);
     QChar symbol;
     QString codeword; //possibly replace with bits later
     int codewordLength;
 };
 
-inline bool operator <(const Code& lhs, const Code& rhs) {
+inline bool operator <(const HuffmanCode& lhs, const HuffmanCode& rhs) {
     if( lhs.codewordLength == rhs.codewordLength)
     {
         return lhs.symbol < rhs.symbol;

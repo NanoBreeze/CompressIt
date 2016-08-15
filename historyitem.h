@@ -6,7 +6,7 @@
 struct HistoryItem{
     int id;
     QString fileName;
-    int dateTime;
+    QString dateTime;
     double compressionRatio;
     double originalSize;
     double compressedSize;

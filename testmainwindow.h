@@ -17,7 +17,6 @@
 #include "Algorithms/huffman.h"
 #include "Algorithms/huffmannode.h"
 
-#include "prefixtree.h"
 
 //#include "historyitem.h"
 

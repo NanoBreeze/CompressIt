@@ -19,9 +19,9 @@ Huffman::Huffman()
  * 5. Traverse top to bottom to accumulate 0s and 1s. When traversal reaches an original node, the conglomerate of 0s and 1s represents its encoding
  */
 
-void Huffman::compress(const QString &filePath)
+void Huffman::compress(QString filePath)
 {
-    readFile(filePath);
+    text = readFile(filePath);
     createNodesFromFrequency(symbolFrequency);
     root = constructHuffmanTree(nodesWithoutParent);
     createCodewordLengths(root, 0);
@@ -29,15 +29,20 @@ void Huffman::compress(const QString &filePath)
     assignCanonicalCodewords(codes);
     encodeText(text);
     QList<int> byteInts = byteAlignEncodedText(encodedText);
-    writeBinaryFile(byteInts);
+
+   filePath.chop(3); //change *.txt to *.bin
+QString filePathTxt = filePath += "bin";
+
+    writeBinaryFile(filePathTxt, byteInts);
 
 }
 
-void Huffman::readFile(const QString &filePath)
+QString Huffman::readFile(const QString &filePath)
 {
     QFile file(filePath);
     if (file.open(QIODevice::ReadOnly))
     {
+        QString text = "";
         QTextStream textStream(&file);
         while (!textStream.atEnd())
         {
@@ -47,9 +52,11 @@ void Huffman::readFile(const QString &filePath)
             qDebug() << line;
         }
         file.close();
+        return text;
     }
     else {
         qDebug() << "The specified file can't be opened";
+        return NULL;
     }
 }
 
@@ -123,7 +130,7 @@ void Huffman::createCodewordLengths(HuffmanNode *root, int length)
 //        qDebug() << "Inside if statment. Thus, node with only one char. Current length: " << length;
         Q_ASSERT(root->right == nullptr);
 
-        Code code(QString(root->characters).at(0), length);
+        HuffmanCode code(QString(root->characters).at(0), length);
         codes.append(code);
 //        qDebug() << QString(root->characters).at(0) << " : " << QString::number(length);
 //        codeWordLengths.insert(QString(root->characters).at(0), length);
@@ -134,14 +141,14 @@ void Huffman::createCodewordLengths(HuffmanNode *root, int length)
     createCodewordLengths(root->right, length);
 }
 
-void Huffman::sortCanonically(QList<Code> &codes)
+void Huffman::sortCanonically(QList<HuffmanCode> &codes)
 {
     //sort codes by codeword length and then symbol
     qSort(codes);
 }
 
 //Algorithm from https://en.wikipedia.org/wiki/Canonical_Huffman_code
-void Huffman::assignCanonicalCodewords(QList<Code> &codes)
+void Huffman::assignCanonicalCodewords(QList<HuffmanCode> &codes)
 {
     //the codes are sorted in ascending order. 0th element is the smallest
 //    int leadingZeroPadCount = codes[0].codewordLength - 1;
@@ -149,7 +156,7 @@ void Huffman::assignCanonicalCodewords(QList<Code> &codes)
     int previousCodeword = -1; //used to determine next codeword. Added to and bitshifted
     int previousCodewordLength = 0; //determines number of bitshifts to perform on current code
 
-    for(Code& code: codes)
+    for(HuffmanCode& code: codes)
     {
         previousCodeword = (previousCodeword + 1) << ((code.codewordLength) - previousCodewordLength);
         previousCodewordLength = code.codewordLength;
@@ -185,7 +192,7 @@ void Huffman::encodeText(const QString &text)
     {
         QString codeword;
         //find codeword. Looping is not optimal strategy. Consider using a hash instead
-        foreach(Code code, codes)
+        foreach(HuffmanCode code, codes)
         {
             if (c == code.symbol)
             {
@@ -221,10 +228,11 @@ QList<int> Huffman::byteAlignEncodedText(const QString &encodedText)
 
 }
 
-void Huffman::writeBinaryFile(const QList<int>& byteInts)
+void Huffman::writeBinaryFile(const QString& filePath, const QList<int>& byteInts)
 {
+
     //representing hex
-    QFile file("C://Users//Lenny//Desktop//WriteBin.bin");
+    QFile file(filePath);
     file.open(QIODevice::WriteOnly);
     QDataStream out(&file);
 
@@ -243,7 +251,7 @@ void Huffman::writeBinaryFile(const QList<int>& byteInts)
 
 
     //write codebook to file
-    foreach(Code code, codes)
+    foreach(HuffmanCode code, codes)
     {
         qDebug() << (qint8) code.symbol.toLatin1();
         out << (qint8) code.symbol.toLatin1();
@@ -262,7 +270,7 @@ void Huffman::writeBinaryFile(const QList<int>& byteInts)
 int Huffman::getNumberOfCodesOfBitLength(const int &length)
 {
     int count = 0;
-    foreach(Code code, codes)
+    foreach(HuffmanCode code, codes)
     {
         if (code.codewordLength == length)
         {
@@ -305,7 +313,7 @@ void Huffman::printNodesWithoutChildren()
 
 void Huffman::printCodewordLengths()
 {
-    foreach(Code code, codes)
+    foreach(HuffmanCode code, codes)
     {
         qDebug() << code.symbol << " : " << code.codewordLength;
     }

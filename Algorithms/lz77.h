@@ -11,7 +11,7 @@ class LZ77
 {
 public:
     LZ77();
-    void compress();
+    void compress(const QString& filePath);
 
 private:
     QString searchBuffer;
@@ -29,6 +29,7 @@ private:
     int findLookaheadMatchingLength(const int& substringLength, const QString& lookaheadBuffer) const; //returns the number of element at index 0 and index substringLength repetitively that match.
 
     void shiftWindow(const int& longestLength); //moves the searchBuffer and lookaheadBuffer by the longestLength + 1
+
 };
 
 #endif // LZ77_H

@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, SIGNAL(databaseChanged()), this, SLOT(refreshHistoryTableView()));
 
-    ui->statusBar->showMessage("This is the status bar");
+//    ui->statusBar->showMessage("This is the status bar");
 
 }
 
@@ -51,7 +51,7 @@ void MainWindow::setupCurrentFilesTableWidget()
     ui->currentFilesTableWidget->setColumnCount(5);
 
     ui->currentFilesTableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem("File"));
-    ui->currentFilesTableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("Size"));
+    ui->currentFilesTableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("Size (bytes)"));
     ui->currentFilesTableWidget->setHorizontalHeaderItem(2, new QTableWidgetItem("Progress"));
     ui->currentFilesTableWidget->setHorizontalHeaderItem(3, new QTableWidgetItem("Compressed Size"));
     ui->currentFilesTableWidget->setHorizontalHeaderItem(4, new QTableWidgetItem("Ratio"));
@@ -70,14 +70,7 @@ void MainWindow::on_action_Load_triggered()
 {
     QList<QUrl> selectedFileUrls = fileDialog.getOpenFileUrls(this, "Load file");
 
-    for (const QUrl url: selectedFileUrls)
-    {
-        QString fileName = extractFileName(url);
-        double fileSize = getFileSize(url);
-
-        displayFileData(fileName, fileSize);
-    }
-}
+    extractFileInsights(selectedFileUrls);}
 
 //these two methods "on_action_History_toggled" and "on_historyDockWidget_visibilityChanged" are like observables
 //there might be an existing function that handles visibility changes
@@ -129,12 +122,12 @@ void MainWindow::on_historyTableView_clicked(const QModelIndex &index)
 void MainWindow::populateStatsDockWidget(const int& id) const
 {
     HistoryItem historyItem = DbManager::getDbManager().getHistoryItem(id);
-    ui->fileName_lbl->setText(historyItem.fileName);
-    ui->date_time_lbl->setText(QString::number(historyItem.dateTime));
-    ui->originalSize_lbl->setText(QString::number(historyItem.originalSize));
-    ui->compressedSize_lbl->setText(QString::number(historyItem.compressedSize));
-    ui->executionTime_lbl->setText(QString::number(historyItem.executionTime));
-    ui->compressionRatio_lbl->setText(QString::number(historyItem.compressionRatio));
+    ui->fileName_lbl->setText("<b>File Name: </b>" + historyItem.fileName);
+    ui->date_time_lbl->setText("<b>Datetime: </b>" + historyItem.dateTime);
+    ui->originalSize_lbl->setText("<b>Original Size (b): </b>" + QString::number(historyItem.originalSize));
+    ui->compressedSize_lbl->setText("<b>Compressed Size (b): </b>" + QString::number(historyItem.compressedSize));
+    ui->executionTime_lbl->setText("<b>Execution Time (ms): </b>" + QString::number(historyItem.executionTime));
+    ui->compressionRatio_lbl->setText("<b>Compression Ratio: </b>" + QString::number(historyItem.compressionRatio));
     ui->notes_lbl->setText(historyItem.notes);
 }
 
@@ -165,24 +158,28 @@ void MainWindow::dropEvent(QDropEvent *event)
     {
         QList<QUrl> urls = mimeData->urls();
 
-        for (const QUrl url : urls )
-        {
-            QString fileName = extractFileName(url);
-            double fileSize = getFileSize(url);
-
-            displayFileData(fileName, fileSize);
-        }
+        extractFileInsights(urls);
     }
 }
 
-QString MainWindow::extractFileName(const QUrl &url)
+void MainWindow::extractFileInsights(const QList<QUrl> &urls)
 {
+        foreach (QUrl url, urls)
+        {
+            QString filePath = getFilePath(url);
+            QString fileName = getFileName(filePath);
+            double fileSize = getFileSize(filePath);
 
-    QString fileUrl = url.toString().right(url.toString().count() - 8);
-    qDebug() << "The fileUrl is: " << fileUrl;
+            filePaths.append(filePath);
+
+            displayFileData(fileName, fileSize);
+        }
+}
 
 
-    QFile file(fileUrl);
+QString MainWindow::getFileName(const QString& filePath)
+{
+    QFile file(filePath);
     Q_ASSERT( file.exists()); //since the user selected the file, it must exist!
 
     QFileInfo fileInfo(file.fileName()); //us
@@ -191,19 +188,19 @@ QString MainWindow::extractFileName(const QUrl &url)
     qDebug() << fileName;
     return fileName;
 
-    double fileSize = file.size();
-
-    qDebug() << fileSize;
 }
 
-double MainWindow::getFileSize(const QUrl &url)
+double MainWindow::getFileSize(const QString &filePath)
 {
-
-    QString fileUrl = url.toString().right(url.toString().count() - 8);
-    QFile file(fileUrl);
+    QFile file(filePath);
 
     qDebug() << file.size();
     return file.size();
+}
+
+QString MainWindow::getFilePath(const QUrl& url)
+{
+    return url.toString().right(url.toString().count() - 8);
 }
 
 void MainWindow::on_currentFilesTableWidget_clicked(const QModelIndex &index)
@@ -235,8 +232,34 @@ void MainWindow::on_actionClear_History_triggered()
 //intended to trigger compressing the files. For now, just insert a record into database
 void MainWindow::on_actionCompressIt_triggered()
 {
-    DbManager::getDbManager().addHistoryItem("compressedFileName", 234234, 12, 48, 4.0, 522, "These are the notes for the compressed file");
-    emit databaseChanged();
+    //always Huffman encode for now
+    while(!filePaths.isEmpty())
+    {
+        QString filePath = filePaths.dequeue();
+
+        QElapsedTimer timer;
+        timer.start();
+        compressionController.compress(filePath, AlgorithmEnum::Huffman);
+        int compressionTime = timer.elapsed(); //compression time is in ms
+
+        QString filePathBin = filePath; //gest the binary file url
+        filePathBin.chop(3);
+        filePathBin += "bin";
+
+        QString fileName = getFileName(filePath);
+        double originalSize = getFileSize(filePath);
+        double compressedSize = getFileSize(filePathBin);
+        double compressionRatio = compressedSize / originalSize;
+        QString dateTime = QDateTime::currentDateTime().toString();
+
+        DbManager::getDbManager().addHistoryItem(fileName, dateTime, compressionRatio, originalSize, compressedSize, compressionTime, "");
+
+        emit databaseChanged();
+    }
+    Q_ASSERT(filePaths.isEmpty()); //the queue should be empty after compressing
+
+ui->currentFilesTableWidget->clearContents();
+
 }
 
 
@@ -244,5 +267,15 @@ void MainWindow::refreshHistoryTableView()
 {
     qDebug() << "refreshHistoryTableView called";
     historyTableViewModel->setQuery("SELECT id, fileName, dateTime, compressionRatio FROM History");
+
+}
+
+
+void MainWindow::on_actionDecompress_triggered()
+{
+    QUrl selectedBinaryFileUrl = fileDialog.getOpenFileUrl(this, "Load file", QUrl(), "Binary Files (*.bin)");
+    QString filePath = getFilePath(selectedBinaryFileUrl);
+
+compressionController.decompress(filePath);
 
 }

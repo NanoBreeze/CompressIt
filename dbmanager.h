@@ -18,7 +18,7 @@ class DbManager
 public:
     static DbManager& getDbManager(); //returns the DbManager singleton
     void addHistoryItem(const QString& fileName,
-                        const int& dateTime,
+                        const QString& dateTime,
                         const double& compressionRatio,
                         const double& originalSize,
                         const double& compressedSize,

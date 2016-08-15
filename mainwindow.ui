@@ -56,6 +56,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_Load"/>
+    <addaction name="actionDecompress"/>
     <addaction name="separator"/>
     <addaction name="actionClear_History"/>
    </widget>
@@ -77,22 +78,12 @@
      <addaction name="actionHuffman"/>
      <addaction name="actionArithmetic"/>
      <addaction name="actionLZ77"/>
-     <addaction name="actionLZ78"/>
     </widget>
     <addaction name="menuCompression_Algorithms"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionUser_manual"/>
-    <addaction name="separator"/>
-    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_vie"/>
    <addaction name="menu_Settings"/>
-   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -197,96 +188,66 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
-    <widget class="QLabel" name="fileName_lbl">
+    <widget class="QWidget" name="">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>47</width>
-       <height>13</height>
+       <x>0</x>
+       <y>10</y>
+       <width>191</width>
+       <height>351</height>
       </rect>
      </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="date_time_lbl">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>20</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="originalSize_lbl">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="compressedSize_lbl">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="executionTime_lbl">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="compressionRatio_lbl">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>70</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="notes_lbl">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>160</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="fileName_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="date_time_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="originalSize_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="compressedSize_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="compressionRatio_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="executionTime_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="notes_lbl">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>
@@ -338,16 +299,6 @@
     <string>Clear History</string>
    </property>
   </action>
-  <action name="actionUser_manual">
-   <property name="text">
-    <string>User Manual</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
   <action name="actionArithmetic">
    <property name="text">
     <string>Arithmetic</string>
@@ -358,9 +309,9 @@
     <string>LZ77</string>
    </property>
   </action>
-  <action name="actionLZ78">
+  <action name="actionDecompress">
    <property name="text">
-    <string>LZ78</string>
+    <string>Decompress</string>
    </property>
   </action>
  </widget>

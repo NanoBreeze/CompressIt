@@ -14,7 +14,12 @@ void HuffmanDecode::decompress(const QString &filePath)
     deduceCanonicalEncoding(codes);
     createCodewordPrefixTree(codes);
     QList<QChar> message = decodeBinaryEncoding(root);
-    writeOriginalFile(message);
+
+    QString filePathTxt = filePath;
+   filePathTxt.chop(3); //change *.bin to *.txt
+    filePathTxt += "txt"; //similar to compress
+
+    writeOriginalFile(filePathTxt, message);
     //hexString[0] and [1] represent amount of symbols with codeword length 1
     //[2] and [3] with codeword length 2
     //[4] and [5] with codeword length 3
@@ -98,7 +103,7 @@ void HuffmanDecode::addSymbolsAndCodewordLengths()
         hexString = hexString.remove(0, 2);
         QChar symbol = QChar::fromLatin1(byte.toInt(0, 16));
         int codewordLength = getCodewordLength(symbolsProcessed);
-        Code code(symbol, codewordLength);
+        HuffmanCode code(symbol, codewordLength);
         codes.append(code);
         ++symbolsProcessed;
     }
@@ -124,7 +129,7 @@ int HuffmanDecode::getCodewordLength(const int &symbolIndex) const
     Q_ASSERT(false); //this shouldn't happen because all symbolIndex must associated with a length
 }
 
-void HuffmanDecode::deduceCanonicalEncoding(QList<Code> & codes)
+void HuffmanDecode::deduceCanonicalEncoding(QList<HuffmanCode> & codes)
 {
     //this is essentially identical to finding the canonical codeword when encoding symbols
     //consider merging this redundant code
@@ -135,7 +140,7 @@ void HuffmanDecode::deduceCanonicalEncoding(QList<Code> & codes)
     int previousCodeword = -1; //used to determine next codeword. Added to and bitshifted
     int previousCodewordLength = 0; //determines number of bitshifts to perform on current code
 
-    for(Code& code: codes)
+    for(HuffmanCode& code: codes)
     {
         previousCodeword = (previousCodeword + 1) << ((code.codewordLength) - previousCodewordLength);
         previousCodewordLength = code.codewordLength;
@@ -156,11 +161,11 @@ QString HuffmanDecode::padLeftZeros(const int& codeword, const int& requiredCode
     return zeros + QString::number(codeword, 2);
 }
 
-void HuffmanDecode::createCodewordPrefixTree(QList<Code> &codes)
+void HuffmanDecode::createCodewordPrefixTree(QList<HuffmanCode> &codes)
 {
     PrefixTreeCodeNode* current = &root;
 
-    foreach(Code code, codes)
+    foreach(HuffmanCode code, codes)
     {
         qDebug() << "Symbol: " << code.symbol << ". Codeword: " << code.codeword;
 
@@ -246,9 +251,9 @@ QString HuffmanDecode::padLeftZeros(const QString& binaryString, const int& zero
     return zeros + binaryString;
 }
 
-void HuffmanDecode::writeOriginalFile(const QList<QChar>& message) //creates original text in a new file
+void HuffmanDecode::writeOriginalFile(const QString& filePath, const QList<QChar>& message) //creates original text in a new file
 {
-    QFile file("C://Users//Lenny//Desktop//WriteOriginal.txt");
+    QFile file(filePath); //overwrites existing
     if (file.open(QIODevice::WriteOnly))
     {
     QTextStream textStream(&file);

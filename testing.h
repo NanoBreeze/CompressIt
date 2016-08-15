@@ -13,7 +13,6 @@
 #include <QByteArray>
 #include <QDataStream>
 
-#include "prefixtreenode.h"
 
 class Testing
 {
@@ -26,7 +25,6 @@ public:
     bool search(const QString& word);
     int getLetterIndex(const QChar& letter);
 
-    PrefixTreeNode root;
 
 //    PrefixTreeNode returnPointer(PrefixTreeNode* node);
 

@@ -5,16 +5,22 @@ LZ77::LZ77() : sbStartIndex(0), text(""), encodedText("")
 
 }
 
-void LZ77::compress()
+void LZ77::compress(const QString& filePath)
 {
-    text = "aabacacacdba"; //"cabracadabrarrarrad";
-    searchBuffer = "aabac"; //"abaabc";
-    lookaheadBuffer = "acacd"; //"abcae";
+//    text = "aabacacacdba"; //"cabracadabrarrarrad";
+//    searchBuffer = "aabac"; //"abaabc";
+//    lookaheadBuffer = "acacd"; //"abcae";
+
+    readFile(filePath);
+
+    searchBuffer = text.left(text.length()/4);
+    lookaheadBuffer = text.mid(searchBuffer.length(), text.length() /4);
 
     encodedText = searchBuffer;
 
     while (!lookaheadBuffer.isEmpty())
     {
+
         int longestLength = encodeLongestMatch(searchBuffer, lookaheadBuffer);
         shiftWindow(longestLength);
     }

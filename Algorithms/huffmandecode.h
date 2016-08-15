@@ -21,7 +21,7 @@ public:
 private:
     QByteArray bytes;
     QString hexString; //contains the binary bytes in terms of hex values
-    QList<Code> codes; //code, containing the symbol and the decoded codeword
+    QList<HuffmanCode> codes; //code, containing the symbol and the decoded codeword
     int symbolCountForCodewordLengths[16]; //the number of symbols that have 1, 2, 3, etc. codeword length
     int symbolCount; //equal to sum of elements in symbolCountForCodewordLengths
     QString readFile(const QString& filePath);
@@ -33,15 +33,15 @@ private:
     void addSymbolsAndCodewordLengths(); //finds the symbol and codeword associated with that symbol
     int getCodewordLength(const int& symbolIndex) const; //returns the length of the codeword associated at the given index, which is matched to symbolCountForCodewordLength[...]
 
-    void deduceCanonicalEncoding(QList<Code>&); //finds the encoding associated with each symbol base upon their codelength and canonical algorithm
+    void deduceCanonicalEncoding(QList<HuffmanCode>&); //finds the encoding associated with each symbol base upon their codelength and canonical algorithm
     QString padLeftZeros(const int& codeword, const int& requiredCodewordLength); //left pads the given string with specified amount of 0s
 
     PrefixTreeCodeNode root; //root of the prefix tree containing code nodes
-    void createCodewordPrefixTree(QList<Code>&); //enables matching binary patterns in encoded file to the associated symbol
+    void createCodewordPrefixTree(QList<HuffmanCode>&); //enables matching binary patterns in encoded file to the associated symbol
     QList<QChar> decodeBinaryEncoding(PrefixTreeCodeNode& root); //converts the binary strings (codewords) in file into their respective symbols
     QString padLeftZeros(const QString& binaryString, const int& zerosNeededCount); //used by decodeBinaryEncoding
 
-    void writeOriginalFile(const QList<QChar>& message); //creates original text in a new file
+    void writeOriginalFile(const QString& filePath, const QList<QChar>& message); //creates original text in a new file
 };
 
 

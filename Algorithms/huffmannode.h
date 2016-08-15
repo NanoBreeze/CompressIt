@@ -5,6 +5,7 @@
 
 struct HuffmanNode {
     HuffmanNode();
+    ~HuffmanNode();
     HuffmanNode* left = nullptr;
     HuffmanNode* right = nullptr;
     //a node is availalbe to have its accumulatedFrequency be added to another node if this is false.
