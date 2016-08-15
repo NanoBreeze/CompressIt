@@ -127,7 +127,7 @@ void MainWindow::populateStatsDockWidget(const int& id) const
     ui->originalSize_lbl->setText("<b>Original Size (b): </b>" + QString::number(historyItem.originalSize));
     ui->compressedSize_lbl->setText("<b>Compressed Size (b): </b>" + QString::number(historyItem.compressedSize));
     ui->executionTime_lbl->setText("<b>Execution Time (ms): </b>" + QString::number(historyItem.executionTime));
-    ui->compressionRatio_lbl->setText("<b>Compression Ratio: </b>" + QString::number(historyItem.compressionRatio));
+    ui->compressionRatio_lbl->setText("<b>Compression Ratio: </b>" + QString::number(historyItem.compressionRatio) + "%");
     ui->notes_lbl->setText(historyItem.notes);
 }
 
@@ -249,7 +249,7 @@ void MainWindow::on_actionCompressIt_triggered()
         QString fileName = getFileName(filePath);
         double originalSize = getFileSize(filePath);
         double compressedSize = getFileSize(filePathBin);
-        double compressionRatio = compressedSize / originalSize;
+        double compressionRatio = (compressedSize / originalSize) * 100; //as percentage
         QString dateTime = QDateTime::currentDateTime().toString();
 
         DbManager::getDbManager().addHistoryItem(fileName, dateTime, compressionRatio, originalSize, compressedSize, compressionTime, "");
